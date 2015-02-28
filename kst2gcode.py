@@ -2,11 +2,11 @@
 # coding: utf8
 
 """
-kst2gcode.py
+kst2gcode.py: KSTストロークフォントデータをG-Codeに変換します
+  https://github.com/deton/hakubanbot
+  (based on http://boxheadroom.com/2009/06/03/kst)
 
-KSTストロークフォントデータをG-Codeに変換します
-
-必要なファイル
+必要なファイル:
 
 KST32B
 極めてコンパクトなJIS第1水準漢字他のStrokeFont(KST)
@@ -18,12 +18,10 @@ http://www.vector.co.jp/soft/data/writing/se119277.html
 ex)
 
 import kst2gcode
-kstfont = KST2GCode(fname=kst.FONT_KST32B, size=32)
+kstfont = KST2GCode(fname=kst2gcode.FONT_KST32B, size=32)
 stroke = kstfont.getstroke(ch)
 
 stroke  ... [ "G91", "G0 Z45", "G0 X17", ... ]
-
-http://boxheadroom.com/2009/06/03/kst
 
 ****  Font_format(=CSF1:CompactStrokeFont/1): 
 ****    20(Hex)     : Terminator 
