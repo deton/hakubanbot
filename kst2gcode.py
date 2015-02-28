@@ -61,7 +61,9 @@ class KST(object):
                 return open(os.path.join(p, os.path.split(fname)[-1]))
         self.size = size
         self.debug = False
-        self.cacheflag = False
+        self.cacheflag = True
+        if self.cacheflag:
+            self.cache = dict()
         self.kst_dic = dict()
         f = fopen(fname)
         for i in f:
@@ -79,11 +81,11 @@ class KST(object):
         #sc=size/32.
         sc = 1.375
         debug = self.debug
-        cacheflag = self.cacheflag
-        if cacheflag:
+        if self.cacheflag:
             stroke = self.cache.get(ch, [])
             if stroke:
-                print "cache"
+                if debug:
+                    print "cache"
                 return stroke
         else:
             stroke = []
@@ -189,7 +191,7 @@ class KST(object):
         #stroke = resize(stroke, size)
         if debug:
             print stroke
-        if cacheflag:
+        if self.cacheflag:
             self.cache[ch] = stroke
         return stroke
     def resize(self, stroke, size = 32):
