@@ -214,7 +214,18 @@ def utf2jis(s):
     return c
 
 if __name__ == "__main__":
+    import codecs
+    sys.stdin  = codecs.getreader('utf-8')(sys.stdin)
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
     kstfont = KST()
-    stroke = kstfont.getstroke(u"勤")
-    for st in stroke:
-        print st
+    for line in sys.stdin:
+        #print line
+        for ch in line:
+            if ch == '\n':
+                #TODO: move position
+                print
+                continue
+            stroke = kstfont.getstroke(ch)
+            for st in stroke:
+                print st
+            print
