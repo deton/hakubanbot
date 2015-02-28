@@ -86,7 +86,7 @@ class KST(object):
                 print "cache"
                 return stroke
         else:
-            stroke = Stroke()
+            stroke = []
         stroke.append("G91")
         stroke.append("UP")
         dat = self.kst_dic.get(utf2jis(ch), "!~")
@@ -195,60 +195,6 @@ class KST(object):
     def resize(self, stroke, size = 32):
         sc = size / float(self.size)
         return scale(stroke, sc)
-
-class Stroke(list):
-    def __new__(self):
-        return list.__new__(self)
-    def __init__(self, s = [], size = 32):
-        self.size = size
-        list.__init__(self, s)
-    def copy(self):
-        return copy.deepcopy(self)
-    def move(self, dx, dy):
-        return move(self, dx, dy)
-    def resize(self, size = 32):
-        return resize(self, size)
-    def scale(self, scale_ = (1., 1.)):
-        return scale(self, scale_)
-    def getwidth(self):
-        return getwidth(self)
-def move(stroke,dx,dy):
-    stroke=stroke.copy()
-    for s in stroke :
-        for i,(x,y) in enumerate(s) :
-            s[i]=[x+dx,y+dy]
-    return stroke
-def resize(stroke,size=32):
-    sc=size/stroke.size
-    ret=scale(stroke,sc)
-    ret.size=size
-    return ret
-def scale(stroke,scale=(1.,1.)):
-    "scale=n  or scale=(m,n)"
-    stroke0=stroke
-    stroke=stroke.copy()
-    t=type(scale)
-    if t==int or t==float :
-        scx=scy=scale
-    elif t==tuple or t==list:
-        scx,scy=scale
-    for s in stroke :
-        for i,(x,y) in enumerate(s) :
-            #s[i]=int(x*scx),int(y*scy)
-            s[i]=x*scx,y*scy
-    stroke.size=stroke0.size*scy
-    return stroke
-def getwidth(stroke):
-    try:
-        px=[ p[0] for plist in stroke for p in plist]
-        w=max(px)
-        #w-=min(px)
-    except:
-        w=16
-    w = 16 if w<=0 else w
-    return w
-
-debug=True    
 
 def utf2jis(s):
     """http://www.unixuser.org/~euske/doc/kanjicode/index.html
