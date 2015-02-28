@@ -52,6 +52,9 @@ FONT_KST32B="kst32b.txt"
 FONT_KST32ZX="kst_zx.txt"
 
 class KST(object):
+    __PENDOWN = 'G0 Z-45'
+    __PENUP = 'G0 Z45'
+
     def __init__(self, fname=FONT_KST32B, size=32):
         def fopen(fname, mode="rb"):
             if os.path.exists(fname):
@@ -107,7 +110,7 @@ class KST(object):
                 if c > 0x26:
                     x -= 1
                 if down:
-                    stroke.append("UP")
+                    stroke.append(self.__PENUP)
                     down = False
                     if debug:
                         print "UP"
@@ -125,7 +128,7 @@ class KST(object):
                 if c > 0x5b:
                     x -= 2
                 if not down:
-                    stroke.append("DOWN")
+                    stroke.append(self.__PENDOWN)
                     down = True
                     if debug:
                         print "DOWN"
@@ -152,7 +155,7 @@ class KST(object):
                 else:
                     y = c - 0xa1 + 1
                 if down:
-                    stroke.append("UP")
+                    stroke.append(self.__PENUP)
                     down = False
                     if debug:
                         print "UP"
@@ -171,7 +174,7 @@ class KST(object):
                 # C0-DF  : Draw to Y=0--31 
                 y = c - 0xc0
                 if not down:
-                    stroke.append("DOWN")
+                    stroke.append(self.__PENDOWN)
                     down = True
                     if debug:
                         print "DOWN"
@@ -190,7 +193,7 @@ class KST(object):
         if debug:
             print stroke
         if stroke:
-            stroke.insert(0, "UP")
+            stroke.insert(0, self.__PENUP)
             stroke.insert(0, "G91")
         if self.cacheflag:
             self.cache[ch] = stroke
