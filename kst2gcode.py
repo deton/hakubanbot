@@ -4,32 +4,24 @@
 """
 kst2gcode.py
 
-KSTストロークフォントデータを変換します
+KSTストロークフォントデータをG-Codeに変換します
 
 必要なファイル
 
 KST32B
 極めてコンパクトなJIS第1水準漢字他のStrokeFont(KST)
-
 http://www.vector.co.jp/soft/data/writing/se119277.html
 
-KST32ZX
-篆文,篆書風(Zhuanwen,Zhongwen-Like),漢字StrokeFont(KST)
-
-http://www.vector.co.jp/soft/win95/writing/se256880.html
-
-書庫中のデータファイルKST32B.TXT KST_ZX.TXTを、
+書庫中のデータファイルKST32B.TXTを、
 このモジュールと同じフォルダに置いてください
 
 ex)
 
-import kst
+import kst2gcode
+kstfont = KST2GCode(fname=kst.FONT_KST32B, size=32)
+stroke = kstfont.getstroke(ch)
 
-kstfont=KST( kst.FONT_KST32B または kst.FONT_KST32ZX,size=32)
-stroke=kstfont.getstroke()
-
-stroke  ... [ [[x00,y00], [x01,y01],[x02,y02]...],
-              [[x10,y10], [x11,y11],[x12,y12]...], ...] 
+stroke  ... [ "G91", "G0 Z45", "G0 X17", ... ]
 
 http://boxheadroom.com/2009/06/03/kst
 
@@ -45,13 +37,12 @@ http://boxheadroom.com/2009/06/03/kst
 ****  < 1..4 6.........max=155 > 
 ****    9999 (font-def) : 9999=HexAddr, (font-def)=CSF1 
 """
-import os,sys
-import copy
+import os, sys
 
-FONT_KST32B="kst32b.txt"
-FONT_KST32ZX="kst_zx.txt"
+FONT_KST32B = "kst32b.txt"
+FONT_KST32ZX = "kst_zx.txt"
 
-class KST(object):
+class KST2GCode(object):
     __PENDOWN = 'G0 Z-45'
     __PENUP = 'G0 Z45'
 
@@ -72,13 +63,13 @@ class KST(object):
         for i in f:
             if not i.startswith("*"):
                 try:
-                    code, stroke = i.split()
-                    self.kst_dic[int(code, 16)] = stroke
+                    code,stroke = i.split()
+                    self.kst_dic[int(code,16)] = stroke
                 except:
                     pass
         f.close()
 
-    def getstroke(self, ch, size = None):
+    def getstroke(self, ch, size=None):
         if not size:
             size = self.size
         #sc=size/32.
@@ -189,18 +180,13 @@ class KST(object):
                 lasty = y
                 if debug:
                     print "draw y=%d" % y
-        #stroke = resize(stroke, size)
         if debug:
             print stroke
         if stroke:
-            stroke.insert(0, self.__PENUP)
-            stroke.insert(0, "G91")
+            stroke = ["G90", self.__PENUP, "G91"] + stroke
         if self.cacheflag:
             self.cache[ch] = stroke
         return stroke
-    def resize(self, stroke, size = 32):
-        sc = size / float(self.size)
-        return scale(stroke, sc)
 
 def utf2jis(s):
     """http://www.unixuser.org/~euske/doc/kanjicode/index.html
@@ -210,18 +196,18 @@ def utf2jis(s):
     ただし例外は EUC で使われている半角カナ
 
     """
-    jislist=[ord(i)&0x7f for i in s.encode("euc-jp")]
-    c=0
+    jislist = [ord(i) & 0x7f for i in s.encode("euc-jp")]
+    c = 0
     for i in jislist:
-        c<<=8
-        c+=i
+        c <<= 8
+        c += i
     return c
 
 if __name__ == "__main__":
     import codecs
     sys.stdin  = codecs.getreader('utf-8')(sys.stdin)
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
-    kstfont = KST()
+    kstfont = KST2GCode()
     for line in sys.stdin:
         #print line
         for ch in line:
