@@ -51,27 +51,27 @@ import copy
 FONT_KST32B="kst32b.txt"
 FONT_KST32ZX="kst_zx.txt"
 
-def fopen(fname,mode="rb"):
-    if os.path.exists(fname):
-        return open(fname)
-    else :
-        p,b=os.path.split(__file__)
-        return open(os.path.join(p,os.path.split(fname)[-1]))
-W,H = 30,32
 class KST(object):
     def __init__(self, fname=FONT_KST32B, size=32):
+        def fopen(fname, mode="rb"):
+            if os.path.exists(fname):
+                return open(fname)
+            else:
+                p,b = os.path.split(__file__)
+                return open(os.path.join(p, os.path.split(fname)[-1]))
         self.size = size
-        lines = fopen(fname).read().splitlines()
         self.debug = False
         self.cacheflag = False
         self.kst_dic = dict()
-        for i in lines:
+        f = fopen(fname)
+        for i in f:
             if not i.startswith("*"):
                 try:
                     code, stroke = i.split()
                     self.kst_dic[int(code, 16)] = stroke
                 except:
                     pass
+        f.close()
 
     def getstroke(self, ch, size = None):
         if not size:
