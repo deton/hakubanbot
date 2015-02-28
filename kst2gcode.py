@@ -89,8 +89,6 @@ class KST(object):
                 return stroke
         else:
             stroke = []
-        stroke.append("G91")
-        stroke.append("UP")
         dat = self.kst_dic.get(utf2jis(ch), "!~")
         #dat = kst_dic.get(ch[0], [])
         if dat and debug:
@@ -191,6 +189,9 @@ class KST(object):
         #stroke = resize(stroke, size)
         if debug:
             print stroke
+        if stroke:
+            stroke.insert(0, "UP")
+            stroke.insert(0, "G91")
         if self.cacheflag:
             self.cache[ch] = stroke
         return stroke
@@ -226,6 +227,7 @@ if __name__ == "__main__":
                 print
                 continue
             stroke = kstfont.getstroke(ch)
-            for st in stroke:
-                print st
-            print
+            if stroke:
+                for st in stroke:
+                    print st
+                print
