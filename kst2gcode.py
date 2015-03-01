@@ -168,6 +168,13 @@ class KST2GCode(object):
                 lasty = y
                 if debug:
                     print "draw y=%d" % y
+        # move to start position of next charater
+        stroke.append((0, 0, self.__PENUP))
+        if ch < 0x80:
+            nextx = 15
+        else:
+            nextx = 30
+        stroke.append((nextx - lastx, 0 - lasty, 0))
         if debug:
             print stroke
         if self.cacheflag:
