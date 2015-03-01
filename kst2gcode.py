@@ -66,6 +66,17 @@ class KST2GCode(object):
                     pass
         f.close()
 
+    def str2gcode(self, str, scale=1.0, xypos=None):
+        stroke = []
+        for ch in str.rstrip():
+            stroke += self.getstroke(ch)
+        scaled = [(dx*scale, dy*scale, dz) for (dx,dy,dz) in stroke]
+        gcode = stroke2gcode(scaled)
+        if xypos:
+            return ["G90", "G0 X%0.3f Y%0.3f" % xypos] + gcode
+        else:
+            return gcode
+
     def getstroke(self, ch):
         debug = self.debug
         if self.cacheflag:
@@ -218,11 +229,6 @@ if __name__ == "__main__":
     kstfont = KST2GCode()
     for line in sys.stdin:
         #print line
-        stroke = []
-        for ch in line:
-            if ch != '\n':
-                stroke += kstfont.getstroke(ch)
-        scaled = [(dx*1.375, dy*1.375, dz) for (dx,dy,dz) in stroke]
-        for g in stroke2gcode(scaled):
+        for g in kstfont.str2gcode(line, 1.375):
             print g
         print
