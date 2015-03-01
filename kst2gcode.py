@@ -41,8 +41,8 @@ FONT_KST32B = "kst32b.txt"
 FONT_KST32ZX = "kst_zx.txt"
 
 class KST2GCode(object):
-    __PENDOWN = -45
-    __PENUP = 45
+    PENDOWN = -45
+    PENUP = 45
 
     def __init__(self, fname=FONT_KST32B):
         def fopen(fname, mode="rb"):
@@ -94,7 +94,7 @@ class KST2GCode(object):
                 if c > 0x26:
                     x -= 1
                 if down:
-                    stroke.append((0, 0, self.__PENUP))
+                    stroke.append((0, 0, self.PENUP))
                     down = False
                     if debug:
                         print "UP"
@@ -111,7 +111,7 @@ class KST2GCode(object):
                 if c > 0x5b:
                     x -= 2
                 if not down:
-                    stroke.append((0, 0, self.__PENDOWN))
+                    stroke.append((0, 0, self.PENDOWN))
                     down = True
                     if debug:
                         print "DOWN"
@@ -136,7 +136,7 @@ class KST2GCode(object):
                 else:
                     y = c - 0xa1 + 1
                 if down:
-                    stroke.append((0, 0, self.__PENUP))
+                    stroke.append((0, 0, self.PENUP))
                     down = False
                     if debug:
                         print "UP"
@@ -154,7 +154,7 @@ class KST2GCode(object):
                 # C0-DF  : Draw to Y=0--31 
                 y = c - 0xc0
                 if not down:
-                    stroke.append((0, 0, self.__PENDOWN))
+                    stroke.append((0, 0, self.PENDOWN))
                     down = True
                     if debug:
                         print "DOWN"
@@ -169,7 +169,8 @@ class KST2GCode(object):
                 if debug:
                     print "draw y=%d" % y
         # move to start position of next charater
-        stroke.append((0, 0, self.__PENUP))
+        if down:
+            stroke.append((0, 0, self.PENUP))
         if ch < 0x80:
             nextx = 15
         else:
@@ -192,7 +193,8 @@ def gcode((dx,dy,dz)):
     return g
 
 def stroke2gcode(stroke):
-    return [gcode(s) for s in stroke]
+    # absolute positioning(G90), PENUP position, relative positioning(G91), ...
+    return ["G90", "G0 Z%d" % KST2GCode.PENUP, "G91"] + [gcode(s) for s in stroke]
 
 def utf2jis(s):
     """http://www.unixuser.org/~euske/doc/kanjicode/index.html
