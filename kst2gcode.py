@@ -43,6 +43,7 @@ FONT_KST32ZX = "kst_zx.txt"
 class KST2GCode(object):
     PENDOWN = -45
     PENUP = 45
+    PENUP_ABS = 45
 
     def __init__(self, fname=FONT_KST32B):
         def fopen(fname, mode="rb"):
@@ -204,8 +205,9 @@ def gcode((dx,dy,dz)):
     return g
 
 def stroke2gcode(stroke):
+    g = [gcode(s) for s in stroke]
     # absolute positioning(G90), PENUP position, relative positioning(G91), ...
-    return ["G90", "G0 Z%d" % KST2GCode.PENUP, "G91"] + [gcode(s) for s in stroke]
+    return ["G90", "G0 Z%d" % KST2GCode.PENUP_ABS, "G91"] + g
 
 def utf2jis(s):
     """http://www.unixuser.org/~euske/doc/kanjicode/index.html
@@ -226,9 +228,16 @@ if __name__ == "__main__":
     import codecs
     sys.stdin  = codecs.getreader('utf-8')(sys.stdin)
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
+    scale = 1.0
+    if len(sys.argv) > 1:
+        scale = float(sys.argv[1])
+    xypos = None
+    if len(sys.argv) > 3:
+        xypos = (float(sys.argv[2]), float(sys.argv[3]))
+
     kstfont = KST2GCode()
     for line in sys.stdin:
         #print line
-        for g in kstfont.str2gcode(line, 1.375):
+        for g in kstfont.str2gcode(line, scale, xypos):
             print g
         print
