@@ -218,14 +218,11 @@ if __name__ == "__main__":
     kstfont = KST2GCode()
     for line in sys.stdin:
         #print line
+        stroke = []
         for ch in line:
-            if ch == '\n':
-                #TODO: move position
-                print
-                continue
-            stroke = kstfont.getstroke(ch)
-            if stroke:
-                scaled = [(dx*1.375, dy*1.375, dz) for (dx,dy,dz) in stroke]
-                for g in stroke2gcode(scaled):
-                    print g
-                print
+            if ch != '\n':
+                stroke += kstfont.getstroke(ch)
+        scaled = [(dx*1.375, dy*1.375, dz) for (dx,dy,dz) in stroke]
+        for g in stroke2gcode(scaled):
+            print g
+        print
