@@ -41,17 +41,16 @@ FONT_KST32B = "kst32b.txt"
 FONT_KST32ZX = "kst_zx.txt"
 
 class KST2GCode(object):
-    __PENDOWN = 'G0 Z-45'
-    __PENUP = 'G0 Z45'
+    __PENDOWN = -45
+    __PENUP = 45
 
-    def __init__(self, fname=FONT_KST32B, size=32):
+    def __init__(self, fname=FONT_KST32B):
         def fopen(fname, mode="rb"):
             if os.path.exists(fname):
                 return open(fname)
             else:
                 p,b = os.path.split(__file__)
                 return open(os.path.join(p, os.path.split(fname)[-1]))
-        self.size = size
         self.debug = False
         self.cacheflag = True
         if self.cacheflag:
@@ -67,11 +66,7 @@ class KST2GCode(object):
                     pass
         f.close()
 
-    def getstroke(self, ch, size=None):
-        if not size:
-            size = self.size
-        #sc=size/32.
-        sc = 1.375
+    def getstroke(self, ch):
         debug = self.debug
         if self.cacheflag:
             stroke = self.cache.get(ch, [])
@@ -99,14 +94,13 @@ class KST2GCode(object):
                 if c > 0x26:
                     x -= 1
                 if down:
-                    stroke.append(self.__PENUP)
+                    stroke.append((0, 0, self.__PENUP))
                     down = False
                     if debug:
                         print "UP"
                 dx = x - lastx
-                dx *= sc
                 if dx != 0:
-                    stroke.append("G0 X%0.3f" % dx)
+                    stroke.append((dx, 0, 0))
                 lastx = x
                 if debug:
                     print "move x=%d" % x
@@ -117,14 +111,13 @@ class KST2GCode(object):
                 if c > 0x5b:
                     x -= 2
                 if not down:
-                    stroke.append(self.__PENDOWN)
+                    stroke.append((0, 0, self.__PENDOWN))
                     down = True
                     if debug:
                         print "DOWN"
                 dx = x - lastx
-                dx *= sc
                 if dx != 0:
-                    stroke.append("G0 X%0.3f" % dx)
+                    stroke.append((dx, 0, 0))
                 lastx = x
                 if debug:
                     print "draw x=%d" % x
@@ -133,7 +126,6 @@ class KST2GCode(object):
                 # 60-7D : Next X to 0--29 
                 x = c - 0x60
                 dx = x - lastx
-                dx *= sc
                 lastx = x
                 if debug:
                     print "next x=%d" % x
@@ -144,18 +136,17 @@ class KST2GCode(object):
                 else:
                     y = c - 0xa1 + 1
                 if down:
-                    stroke.append(self.__PENUP)
+                    stroke.append((0, 0, self.__PENUP))
                     down = False
                     if debug:
                         print "UP"
                 dy = y - lasty
-                dy *= sc
                 if x != -1:
-                    stroke.append("G0 X%0.3f Y%0.3f" % (dx, dy))
+                    stroke.append((dx, dy, 0))
                     x = -1
                 else:
                     if dy != 0:
-                        stroke.append("G0 Y%0.3f" % dy)
+                        stroke.append((0, dy, 0))
                 lasty = y
                 if debug:
                     print "y=%d" % y
@@ -163,28 +154,38 @@ class KST2GCode(object):
                 # C0-DF  : Draw to Y=0--31 
                 y = c - 0xc0
                 if not down:
-                    stroke.append(self.__PENDOWN)
+                    stroke.append((0, 0, self.__PENDOWN))
                     down = True
                     if debug:
                         print "DOWN"
                 dy = y - lasty
-                dy *= sc
                 if x != -1:
-                    stroke.append("G0 X%0.3f Y%0.3f" % (dx, dy))
+                    stroke.append((dx, dy, 0))
                     x = -1
                 else:
                     if dy != 0:
-                        stroke.append("G0 Y%0.3f" % dy)
+                        stroke.append((0, dy, 0))
                 lasty = y
                 if debug:
                     print "draw y=%d" % y
         if debug:
             print stroke
-        if stroke:
-            stroke = ["G90", self.__PENUP, "G91"] + stroke
         if self.cacheflag:
             self.cache[ch] = stroke
         return stroke
+
+def gcode((dx,dy,dz)):
+    g = "G0"
+    if dx != 0:
+        g += " X%0.3f" % dx
+    if dy != 0:
+        g += " Y%0.3f" % dy
+    if dz != 0:
+        g += " Z%d" % dz
+    return g
+
+def stroke2gcode(stroke):
+    return [gcode(s) for s in stroke]
 
 def utf2jis(s):
     """http://www.unixuser.org/~euske/doc/kanjicode/index.html
@@ -215,6 +216,7 @@ if __name__ == "__main__":
                 continue
             stroke = kstfont.getstroke(ch)
             if stroke:
-                for st in stroke:
-                    print st
+                scaled = [(dx*1.375, dy*1.375, dz) for (dx,dy,dz) in stroke]
+                for g in stroke2gcode(scaled):
+                    print g
                 print
