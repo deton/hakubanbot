@@ -41,9 +41,9 @@ FONT_KST32B = "kst32b.txt"
 FONT_KST32ZX = "kst_zx.txt"
 
 class KST2GCode(object):
-    PENDOWN = -45
-    PENUP = 45
-    PENUP_ABS = 45
+    PENDOWN = -60
+    PENUP = 60
+    PENUP_ABS = 60
 
     def __init__(self, fname=FONT_KST32B):
         def fopen(fname, mode="rb"):
@@ -183,7 +183,7 @@ class KST2GCode(object):
         # move to start position of next charater
         if down:
             stroke.append((0, 0, self.PENUP))
-        if ch < 0x80:
+        if ord(ch) < 0x80:
             nextx = 15
         else:
             nextx = 30
