@@ -1,0 +1,17 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>HakubanBot</title>
+</head>
+<body>
+<form method="POST" action="/cgi-bin/hakubanbot.py">
+<input type="hidden" name="cmd" value="drawtext">
+<ul>
+  <li>書く文字列: <input type="text" name="text">
+  <li>サイズ: <input type="text" name="size"> [mm]
+  <li>場所: x=<input type="text" name="x">, y=<input type="text" name="y">
+  <li><input type="submit">
+</ul>
+</form>
+</body>
+</html>
