@@ -1,15 +1,20 @@
-import socket
+#!/usr/bin/python
+import sys, telnetlib
 
 class McuConnection(object):
     def draw_gcodes(self, gcodes):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(('localhost', 6571))
+    	tn = telnetlib.Telnet('localhost', 6571)
         for line in gcodes:
-            sock.send(line + '\n')
-            buf = sock.recv(1024) # '\n> ' on ready
-        sock.close()
+            str = line.strip()
+            print 'W ' + str
+            tn.write(str + '\n')
+            buf = ''
+	    while buf == '':
+                buf = tn.read_until('> ') # ready?
+                print 'R "' + buf + '"'
+                sys.stdout.flush()
+        tn.close()
 
 if __name__ == "__main__":
-    import sys
     conn = McuConnection()
     conn.draw_gcodes(sys.stdin.readlines())
