@@ -41,9 +41,9 @@ FONT_KST32B = "kst32b.txt"
 FONT_KST32ZX = "kst_zx.txt"
 
 class KST2GCode(object):
-    PENDOWN = -60
-    PENUP = 60
-    PENUP_ABS = 60
+    PENDOWN = -55
+    PENUP = 55
+    PENUP_ABS = 55
 
     def __init__(self, fname=FONT_KST32B):
         def fopen(fname, mode="rb"):
