@@ -85,7 +85,9 @@ class KST2GCode(object):
             return gcode
 
     def get_width_height(self, str, scale=(1.0,1.0)):
-        width = reduce(lambda w,ch: w + self.chwidth(ch), str.rstrip())
+        width = 0
+        for ch in str.rstrip():
+            width += self.chwidth(ch)
         return (width*scale[0], 32*scale[1]) # 32: font height of kst32b
 
     def getstroke(self, ch):

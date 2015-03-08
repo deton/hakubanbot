@@ -18,13 +18,24 @@ def draw_gcodes(g):
     conn.draw_gcodes(g)
     #conn.draw_gcodes(["M17"] + g + ["M18"])
 
+eraser_offset = (10, -17) # offset of eraser from pen
+
 def drawtext(text, xyscale, xypos=None, erase=None):
     kstfont = kst2gcode.KST2GCode()
     gcode = kstfont.str2gcode(text, xyscale, xypos)
     # TODO: trim long line
     if erase:
         wh = kstfont.get_width_height(text, xyscale)
-        draw_gcodes(eraseg.make_erase_gcode(xypos, wh) + gcode)
+        # add eraser offset
+        if xypos is None:
+            eg = eraseg.make_erase_gcode(None, wh)
+            draw_gcodes(["G91", "G0 X%d Y%d" % eraser_offset] + eg
+                + ["G91", "G0 X-%d Y%d" % (wh[0]+eraser_offset[0],-eraser_offset[1])]
+                + gcode)
+        else:
+            eg = eraseg.make_erase_gcode(
+                (xypos[0]+eraser_offset[0],xypos[1]+eraser_offset[1]), wh)
+            draw_gcodes(eg + gcode)
     else:
         draw_gcodes(gcode)
 
@@ -64,7 +75,7 @@ elif cmd == "erase":
     width = form.getfirst("w", "30")
     height = form.getfirst("h", "32")
     # convert (x,y) from ([cm],[cm]) to ([dx],[dy])
-    xypos = (cm2dx(x), cm2dy(y) - 15) # -15: offset of eraser
+    xypos = (cm2dx(x) + eraser_offset[0], cm2dy(y) + eraser_offset[1])
     wh = (cm2dx(width), cm2dy(height))
     draw_gcodes(eraseg.make_erase_gcode(xypos, wh))
 else:
