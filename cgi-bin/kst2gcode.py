@@ -18,10 +18,10 @@ http://www.vector.co.jp/soft/data/writing/se119277.html
 ex)
 
 import kst2gcode
-kstfont = KST2GCode(fname=kst2gcode.FONT_KST32B, size=32)
+kstfont = kst2gcode.KST2GCode(fname=kst2gcode.FONT_KST32B)
 stroke = kstfont.getstroke(ch)
 
-stroke  ... [ "G91", "G0 Z45", "G0 X17", ... ]
+stroke  ... [ (1,0,0), (0,3,0), (0,0,-55), (25,0,0), ... ] # (dx,dy,dz)
 
 ****  Font_format(=CSF1:CompactStrokeFont/1): 
 ****    20(Hex)     : Terminator 
