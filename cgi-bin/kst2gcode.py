@@ -45,6 +45,12 @@ class KST2GCode(object):
     PENUP = 55
     PENUP_ABS = 55
 
+    def chwidth(self, ch):
+        if ord(ch) < 0x80:
+            return 15
+        else:
+            return 30
+
     def __init__(self, fname=FONT_KST32B):
         def fopen(fname, mode="rb"):
             if os.path.exists(fname):
@@ -67,16 +73,20 @@ class KST2GCode(object):
                     pass
         f.close()
 
-    def str2gcode(self, str, scale=1.0, xypos=None):
+    def str2gcode(self, str, scale=(1.0,1.0), xypos=None):
         stroke = []
         for ch in str.rstrip():
             stroke += self.getstroke(ch)
-        scaled = [(dx*scale, dy*scale, dz) for (dx,dy,dz) in stroke]
+        scaled = [(dx*scale[0], dy*scale[1], dz) for (dx,dy,dz) in stroke]
         gcode = stroke2gcode(scaled)
         if xypos:
             return ["G90", "G0 X%0.3f Y%0.3f" % xypos] + gcode
         else:
             return gcode
+
+    def get_width_height(self, str, scale=(1.0,1.0)):
+        width = reduce(lambda w,ch: w + self.chwidth(ch), str.rstrip())
+        return (width*scale[0], 32*scale[1]) # 32: font height of kst32b
 
     def getstroke(self, ch):
         debug = self.debug
@@ -183,10 +193,7 @@ class KST2GCode(object):
         # move to start position of next charater
         if down:
             stroke.append((0, 0, self.PENUP))
-        if ord(ch) < 0x80:
-            nextx = 15
-        else:
-            nextx = 30
+        nextx = self.chwidth(ch)
         stroke.append((nextx - lastx, 0 - lasty, 0))
         if debug:
             print stroke
@@ -228,12 +235,12 @@ if __name__ == "__main__":
     import codecs
     sys.stdin  = codecs.getreader('utf-8')(sys.stdin)
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
-    scale = 1.0
-    if len(sys.argv) > 1:
-        scale = float(sys.argv[1])
+    scale = (1.0, 1.0)
+    if len(sys.argv) > 2:
+        scale = (float(sys.argv[1]), float(sys.argv[2]))
     xypos = None
-    if len(sys.argv) > 3:
-        xypos = (float(sys.argv[2]), float(sys.argv[3]))
+    if len(sys.argv) > 4:
+        xypos = (float(sys.argv[3]), float(sys.argv[4]))
 
     kstfont = KST2GCode()
     for line in sys.stdin:
