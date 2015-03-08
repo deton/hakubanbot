@@ -10,10 +10,10 @@ def make_erase_gcode(xypos, widthheight):
     decy = "G0 Y-%d" % unity
     g = ["G90", "G0 X%d Y%d" % xypos, "G0 Z90", "G91"]
     horizup = [incx, incy, decx, incy]
-    horizcnt = (widthheight[1] / (unity*2) + 1)
+    horizcnt = int(widthheight[1] / (unity*2) + 1)
     horizdown = [decx, decy, incx, decy]
     block = horizup * horizcnt + ["G0 X%d" % (unitx + unit)] + horizdown * horizcnt + ["G0 X-%d" % unit]
-    return g + block * (widthheight[0] / unitx + 1) + ["G90", "G0 Z55"]
+    return g + block * int(widthheight[0] / unitx + 1) + ["G90", "G0 Z55"]
 
 if __name__ == "__main__":
     import sys
