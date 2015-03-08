@@ -1,12 +1,19 @@
 #!/usr/bin/python
 
 def make_erase_gcode(x, y, width, height):
+    unit = 5
+    unity = unit
+    unitx = unit * 2
+    incx = "G0 X%d" % unitx
+    decx = "G0 X-%d" % unitx
+    incy = "G0 Y%d" % unity
+    decy = "G0 Y-%d" % unity
     g = ["G90", "G0 X%d Y%d" % (x,y), "G0 Z90", "G91"]
-    horizup = ["G0 X10", "G0 Y5", "G0 X-10", "G0 Y5"]
-    horizcnt = (height / 10 + 1)
-    horizdown = ["G0 X-10", "G0 Y-5", "G0 X10", "G0 Y-5"]
-    block = horizup * horizcnt + ["G0 X15"] + horizdown * horizcnt + ["G0 X-5"]
-    return g + block * (width / 10 + 1) + ["G90", "G0 Z55"]
+    horizup = [incx, incy, decx, incy]
+    horizcnt = (height / (unity*2) + 1)
+    horizdown = [decx, decy, incx, decy]
+    block = horizup * horizcnt + ["G0 X%d" % (unitx + unit)] + horizdown * horizcnt + ["G0 X-%d" % unit]
+    return g + block * (width / unitx + 1) + ["G90", "G0 Z55"]
 
 if __name__ == "__main__":
     import sys
