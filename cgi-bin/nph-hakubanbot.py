@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import cgi
-import os, sys
+import os, sys, subprocess
 import kst2gcode, gcode2mcu, eraseg
 #import cgitb
 #cgitb.enable()
@@ -69,6 +69,19 @@ elif cmd == "init":
     initg = ["M101 T30.0 B-30.0 L-30.0 R30.0 I1 J-1", "D1 L2.8 R2.8",
         "G92 X0 Y0", "G90", "G0 Z55"]
     draw_gcodes(initg)
+elif cmd == "halt":
+    subprocess.call(["killall", "nph-hakubanbot.py"])
+elif cmd == "move":
+    print "start moving"
+    x = form.getfirst("x", "0")
+    y = form.getfirst("y", "0")
+    xypos = (cm2dx(x), cm2dy(y))
+    moveg = ["G90", "G0 Z55", "G0 X%d Y%d" % xypos]
+    draw_gcodes(moveg)
+elif cmd == "pen":
+    z = int(form.getfirst("z", "55"))
+    peng = ["G90", "G0 Z%d" % z]
+    draw_gcodes(peng)
 elif cmd == "erase":
     print "start erasing"
     x = form.getfirst("x", "0")

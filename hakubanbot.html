@@ -4,6 +4,7 @@
 <title>HakubanBot</title>
 </head>
 <body>
+<h3>文字を書く</h3>
 <form method="POST" action="/cgi-bin/nph-hakubanbot.py">
 <input type="hidden" name="cmd" value="drawtext">
 <ul>
@@ -14,12 +15,40 @@
   <li><input type="submit">
 </ul>
 </form>
-<p>
+
+<h3>中断</h3>
 <form method="POST" action="/cgi-bin/nph-hakubanbot.py">
-<input type="hidden" name="cmd" value="init">
-<input type="submit" value="初期化: 現在位置を白板中央に設定">
+<input type="hidden" name="cmd" value="halt">
+<input type="submit" value="中断: 文字描写・消去を中断">
 </form>
-<p>
+
+<h3>移動</h3>
+<form method="POST" action="/cgi-bin/nph-hakubanbot.py">
+<input type="hidden" name="cmd" value="move">
+<ul>
+  <li>場所(白板中央が0,0): x=<input type="text" name="x" value="0"> [cm], y=<input type="text" name="y" value="0"> [cm]
+  <li><input type="submit">
+</ul>
+</form>
+
+<h3>ペン上げ下げ</h3>
+<form method="POST" action="/cgi-bin/nph-hakubanbot.py">
+<input type="hidden" name="cmd" value="pen">
+<input type="hidden" name="z" value="0">
+<input type="submit" value="ペン下げ">
+</form>
+<form method="POST" action="/cgi-bin/nph-hakubanbot.py">
+<input type="hidden" name="cmd" value="pen">
+<input type="hidden" name="z" value="55">
+<input type="submit" value="ペン上げ">
+</form>
+<form method="POST" action="/cgi-bin/nph-hakubanbot.py">
+<input type="hidden" name="cmd" value="pen">
+<input type="hidden" name="z" value="90">
+<input type="submit" value="イレーザ">
+</form>
+
+<h3>消去</h3>
 <form method="POST" action="/cgi-bin/nph-hakubanbot.py">
 <input type="hidden" name="cmd" value="erase">
 <ul>
@@ -28,6 +57,12 @@
   <li>高さ: <input type="text" name="h"> [cm]
   <li><input type="submit">
 </ul>
+</form>
+
+<h3>初期化</h3>
+<form method="POST" action="/cgi-bin/nph-hakubanbot.py">
+<input type="hidden" name="cmd" value="init">
+<input type="submit" value="初期化: 現在位置を白板中央に設定">
 </form>
 </body>
 </html>
