@@ -66,7 +66,8 @@ if cmd == "drawtext":
         xypos = (cm2dx(x), cm2dy(y))
     drawtext(text, (scalex,scaley), xypos, erase)
 elif cmd == "init":
-    initg = ["M101 T30.0 B-30.0 L-30.0 R30.0 I1 J-1", "D1 L2.8 R2.8", "G92 X0 Y0"]
+    initg = ["M101 T30.0 B-30.0 L-30.0 R30.0 I1 J-1", "D1 L2.8 R2.8",
+        "G92 X0 Y0", "G90", "G0 Z55"]
     draw_gcodes(initg)
 elif cmd == "erase":
     print "start erasing"
