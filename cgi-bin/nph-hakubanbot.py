@@ -72,6 +72,7 @@ elif cmd == "init":
     draw_gcodes(initg)
 elif cmd == "halt":
     print "halt"
+    sys.stdout.flush()
     os.close(sys.stdout.fileno())
     subprocess.call(["killall", "nph-hakubanbot.py"])
 elif cmd == "move":
