@@ -47,10 +47,19 @@ def cm2dx(x):
 def cm2dy(y):
     return float(y) * 10 * mm2dy
 
+# check range of x and y (whiteboard size: [-300mm,300mm])
+def outofrange(xypos):
+    if xypos is None:
+        return False
+    if xypos[0] < -300 or xypos[0] > 300:
+        return True
+    if xypos[1] < -300 or xypos[1] > 300:
+        return True
+    return False
+
 form = cgi.FieldStorage()
 cmd = form.getfirst("cmd", "")
 if cmd == "drawtext":
-    print "start drawing"
     text = form.getfirst("text").decode("utf-8")
     size = form.getfirst("size")
     x = form.getfirst("x")
@@ -62,11 +71,15 @@ if cmd == "drawtext":
         scaley = cm2dy(size) / 32.0 # 32: font height
     xypos = None
     if x and y:
-        # TODO: check range of x and y (whiteboard size: [-300mm,300mm])
         xypos = (cm2dx(x), cm2dy(y))
+    if outofrange(xypos):
+        print "x or y is out of range"
+        exit()
+    print "start drawing"
     drawtext(text, (scalex,scaley), xypos, erase)
 elif cmd == "init":
     print "init"
+    # whiteboard size: 60cm*60cm
     initg = ["M101 T30.0 B-30.0 L-30.0 R30.0 I1 J-1", "D1 L2.8 R2.8",
         "G92 X0 Y0", "G90", "G0 Z55"]
     draw_gcodes(initg)
@@ -76,10 +89,13 @@ elif cmd == "halt":
     os.close(sys.stdout.fileno())
     subprocess.call(["killall", "nph-hakubanbot.py"])
 elif cmd == "move":
-    print "start moving"
     x = form.getfirst("x", "0")
     y = form.getfirst("y", "0")
     xypos = (cm2dx(x), cm2dy(y))
+    if outofrange(xypos):
+        print "x or y is out of range"
+        exit()
+    print "start moving"
     moveg = ["G90", "G0 Z55", "G0 X%d Y%d" % xypos]
     draw_gcodes(moveg)
 elif cmd == "pen":
@@ -88,14 +104,18 @@ elif cmd == "pen":
     peng = ["G90", "G0 Z%d" % z]
     draw_gcodes(peng)
 elif cmd == "erase":
-    print "start erasing"
     x = form.getfirst("x", "0")
     y = form.getfirst("y", "0")
     width = form.getfirst("w", "30")
     height = form.getfirst("h", "32")
     # convert (x,y) from ([cm],[cm]) to ([dx],[dy])
     xypos = (cm2dx(x) + eraser_offset[0], cm2dy(y) + eraser_offset[1])
+    if outofrange(xypos):
+        print "x or y is out of range"
+        exit()
+    print "start erasing"
     wh = (cm2dx(width), cm2dy(height))
+    # TODO: range check of wh
     draw_gcodes(hakubanbot.eraseg.make_erase_gcode(xypos, wh))
 else:
     print "unknown cmd: " + cmd
