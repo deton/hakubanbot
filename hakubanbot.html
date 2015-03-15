@@ -16,12 +16,17 @@
 </ul>
 </form>
 
+<hr>
 <h3>中断</h3>
 <form method="POST" action="/cgi-bin/nph-hakubanbot.py">
 <input type="hidden" name="cmd" value="halt">
 <input type="submit" value="中断: 文字描写・消去を中断">
 </form>
+<p>
+(一連のG-Codeのうち、次以降のG-Codeの実行を取りやめ。
+実行中のG-Codeの中断は未対応)
 
+<hr>
 <h3>移動</h3>
 <form method="POST" action="/cgi-bin/nph-hakubanbot.py">
 <input type="hidden" name="cmd" value="move">
@@ -31,6 +36,7 @@
 </ul>
 </form>
 
+<hr>
 <h3>ペン上げ下げ</h3>
 <form method="POST" action="/cgi-bin/nph-hakubanbot.py">
 <input type="hidden" name="cmd" value="pen">
@@ -48,6 +54,7 @@
 <input type="submit" value="イレーザ">
 </form>
 
+<hr>
 <h3>消去</h3>
 <form method="POST" action="/cgi-bin/nph-hakubanbot.py">
 <input type="hidden" name="cmd" value="erase">
@@ -59,10 +66,14 @@
 </ul>
 </form>
 
+<hr>
 <h3>初期化</h3>
 <form method="POST" action="/cgi-bin/nph-hakubanbot.py">
 <input type="hidden" name="cmd" value="init">
 <input type="submit" value="初期化: 現在位置を白板中央に設定">
 </form>
+<p>
+他コマンドの正常動作のために、
+hakubanbot起動後に初期化を実行しておく必要があります。
 </body>
 </html>
