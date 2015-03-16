@@ -9,8 +9,8 @@
 <input type="hidden" name="cmd" value="drawtext">
 <ul>
   <li>書く文字列: <input type="text" name="text">
-  <li>サイズ: <input type="text" name="size"> [cm]
-  <li>場所(白板中央が0,0): x=<input type="text" name="x"> [cm], y=<input type="text" name="y"> [cm]
+  <li>サイズ(無指定時2.8cm): <input type="text" name="size"> [cm]
+  <li>場所(無指定時は現在位置。白板中央が0,0): x=<input type="text" name="x"> [cm], y=<input type="text" name="y"> [cm]
   <li>書く前に消す: <input type="checkbox" name="erase" value="1">
   <li><input type="submit">
 </ul>
@@ -59,9 +59,9 @@
 <form method="POST" action="/cgi-bin/nph-hakubanbot.py">
 <input type="hidden" name="cmd" value="erase">
 <ul>
-  <li>場所(白板中央が0,0): x=<input type="text" name="x"> [cm], y=<input type="text" name="y"> [cm]
-  <li>幅: <input type="text" name="w"> [cm]
-  <li>高さ: <input type="text" name="h"> [cm]
+  <li>場所(白板中央が0,0): x=<input type="text" name="x" value="0"> [cm], y=<input type="text" name="y" value="0"> [cm]
+  <li>幅: <input type="text" name="w" value="3"> [cm]
+  <li>高さ: <input type="text" name="h" value="3.2"> [cm]
   <li><input type="submit">
 </ul>
 </form>
