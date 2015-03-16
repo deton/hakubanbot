@@ -110,8 +110,8 @@ elif cmd == "pen":
 elif cmd == "erase":
     x = form.getfirst("x", "0")
     y = form.getfirst("y", "0")
-    width = form.getfirst("w", "30")
-    height = form.getfirst("h", "32")
+    width = form.getfirst("w", "3")
+    height = form.getfirst("h", "3.2")
     # convert (x,y) from ([cm],[cm]) to ([dx],[dy])
     xypos = (cm2dx(x) + ERASER_OFFSET[0], cm2dy(y) + ERASER_OFFSET[1])
     if outofrange(xypos):
