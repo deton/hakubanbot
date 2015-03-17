@@ -3,6 +3,10 @@
 ホワイトボード前につり下げる、文字を書くロボットです。
 書く文字列、大きさ、位置を、Wi-Fi経由HTTPで指示可能。
 
+![hakubanbot写真](https://github.com/deton/hakubanbot/raw/master/hakubanbot.jpg)
+
+![hakubanbot拡大写真](https://github.com/deton/hakubanbot/raw/master/hakubanbot-large.jpg)
+
 ## 特長
 [Makelangelo](http://www.makelangelo.com/)をベースにしていますが、
 以下の違いがあります。
@@ -45,6 +49,8 @@ GarabatoBOTを参考に作成。
 * サーボモータは両面テープで固定。
 * イレーザは、ゼムクリップを切断したもので、消しゴムをサーボアームに固定。
   消しゴムにティッシュペーパやフェルト等を貼り付け。
+
+![hakubanbot裏側写真](https://github.com/deton/hakubanbot/raw/master/hakubanbot-back.jpg)
 
 ## ソフトウェア
 ### Linino ONEのOSを、LininoIOからLinino OSに変更
