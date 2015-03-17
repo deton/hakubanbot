@@ -7,6 +7,8 @@
 
 ![hakubanbot拡大写真](https://github.com/deton/hakubanbot/raw/master/hakubanbot-large.jpg)
 
+[YouTube動画](https://youtu.be/4IXlrD8SohQ)
+
 ## 特長
 [Makelangelo](http://www.makelangelo.com/)をベースにしていますが、
 以下の違いがあります。
