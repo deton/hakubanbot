@@ -3,11 +3,12 @@
 ホワイトボード前につり下げる、文字を書くロボットです。
 書く文字列、大きさ、位置を、Wi-Fi経由HTTPで指示可能。
 
+[YouTube動画](https://youtu.be/4IXlrD8SohQ)、
+[ニコニコ動画](http://www.nicovideo.jp/watch/sm25818606)
+
 ![hakubanbot写真](https://github.com/deton/hakubanbot/raw/master/hakubanbot.jpg)
 
 ![hakubanbot拡大写真](https://github.com/deton/hakubanbot/raw/master/hakubanbot-large.jpg)
-
-[YouTube動画](https://youtu.be/4IXlrD8SohQ)
 
 ## 特長
 [Makelangelo](http://www.makelangelo.com/)をベースにしていますが、
@@ -38,7 +39,7 @@
   (ただし、現状のHTTP APIは文字列指定のみなのでAPI追加要)
 * ホワイトボード自動掃除機。窓ふきロボット相当。
   ただし、消去だけが目的なら、別の構造にする方が良さそう。
-  ([うおーるぼっと](http://wallbot.org/)等)
+  ([うおーるぼっとBLE](http://wallbot.org/)等)
 
 ## ハードウェア
 GarabatoBOTを参考に作成。
@@ -55,6 +56,10 @@ GarabatoBOTを参考に作成。
 ![hakubanbot裏側写真](https://github.com/deton/hakubanbot/raw/master/hakubanbot-back.jpg)
 
 ## ソフトウェア
+Linino ONE(Linux+Arduino)で、HTTP受け付け(Linux)と、モータ制御(Arduino)。
+
+    HTTP(書く文字列) → CGIスクリプト@Linux → Bridge(G-Code) → Arduino
+
 ### Linino ONEのOSを、LininoIOからLinino OSに変更
 
     linup latest master
@@ -100,7 +105,8 @@ hakubanbot/*は/usr/lib/python2.7/site-packages/hakubanbot/に配置。
 * [ステッピングモータ(モータドライバ付き)](http://www.sengoku.co.jp/mod/sgk_cart/detail.php?code=EEHD-4JT3) 2個
 * スプールというか糸巻き2個。ダイソーのクリアカラー リールホルダーを分解して
   取り出したもの。紐もそのまま使用。
-* サーボモータ。手元にあったプチロボS2のものを流用。サーボアームの形が好適。
+* サーボモータ。手元にあったプチロボS2のものを流用。サーボホーンの形がT字形で、
+  ペン上げとイレーザを使い分けやすいので今回の用途には便利。
 * タミヤのユニバーサルプレート
 * 目玉クリップ。ホワイトボードペン固定用
 * ねじ8個。ステッピングモータや目玉クリップをユニバーサルプレートに固定。
