@@ -6,9 +6,9 @@
 [YouTube動画](https://youtu.be/4IXlrD8SohQ)、
 [ニコニコ動画](http://www.nicovideo.jp/watch/sm25818606)
 
-![hakubanbot写真](https://github.com/deton/hakubanbot/raw/master/hakubanbot.jpg)
+![hakubanbot写真](https://github.com/deton/hakubanbot/raw/img/hakubanbot.jpg)
 
-![hakubanbot拡大写真](https://github.com/deton/hakubanbot/raw/master/hakubanbot-large.jpg)
+![hakubanbot拡大写真](https://github.com/deton/hakubanbot/raw/img/hakubanbot-large.jpg)
 
 ## 特長
 [Makelangelo](http://www.makelangelo.com/)をベースにしていますが、
@@ -30,6 +30,7 @@
   予定はExchangeに登録しているのに、ホワイトボードにも手で書くのは面倒なので。
   Aさんの予定「3/16休み」、Bさんの予定「3/17出張」等。
   ([Exchangeサーバからの予定取得](https://github.com/deton/ExchangeAppointmentBot))
+  ![行動予定表ホワイトボード写真](https://github.com/deton/hakubanbot/raw/img/kodoyotei.jpg)
 * 出退勤表示の自動更新。
   PCが起動中かどうかをもとに「3/13 8:20出勤」「3/13 18:00退勤」等を書く。
   ([LED点滅](https://github.com/deton/presenceled)だけだと、
@@ -53,7 +54,7 @@ GarabatoBOTを参考に作成。
 * イレーザは、ゼムクリップを切断したもので、消しゴムをサーボアームに固定。
   消しゴムにティッシュペーパやフェルト等を貼り付け。
 
-![hakubanbot裏側写真](https://github.com/deton/hakubanbot/raw/master/hakubanbot-back.jpg)
+![hakubanbot裏側写真](https://github.com/deton/hakubanbot/raw/img/hakubanbot-back.jpg)
 
 ## ソフトウェア
 Linino ONE(Linux+Arduino)で、HTTP受け付け(Linux)と、モータ制御(Arduino)。
