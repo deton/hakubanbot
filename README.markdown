@@ -3,12 +3,13 @@
 ホワイトボード前につり下げる、文字を書くロボットです。
 書く文字列、大きさ、位置を、Wi-Fi経由HTTPで指示可能。
 
-[YouTube動画](https://youtu.be/4IXlrD8SohQ)、
-[ニコニコ動画](http://www.nicovideo.jp/watch/sm25818606)
+* Type1: [YouTube動画](https://youtu.be/4IXlrD8SohQ)、
+  [ニコニコ動画](http://www.nicovideo.jp/watch/sm25818606)
+* Type2: [YouTube動画](https://youtu.be/-9cJXXc-xhg)、
+  [ニコニコ動画](http://www.nicovideo.jp/watch/sm25957377)
 
-![hakubanbot写真](https://github.com/deton/hakubanbot/raw/img/hakubanbot.jpg)
-
-![hakubanbot拡大写真](https://github.com/deton/hakubanbot/raw/img/hakubanbot-large.jpg)
+![hakubanbot写真(Type2)](https://github.com/deton/hakubanbot/raw/img/hakubanbot2.jpg)
+![hakubanbot写真(Type1)](https://github.com/deton/hakubanbot/raw/img/hakubanbot.jpg)
 
 ## 特長
 [Makelangelo](http://www.makelangelo.com/)をベースにしていますが、
@@ -21,7 +22,7 @@
  * 制御用PC上でJava GUIアプリを使って操作するのに比べて、
    自動化や他サービスとの連携が容易。
 * ホワイトボードイレーザ付き。文字を書く前にイレーズ可能。
-* 紐でつるすゴンドラ側に全ハードウェアを持っているので、
+* (Type1)紐でつるすゴンドラ側に全ハードウェアを持っているので、
   ホワイトボード側にモータ等を固定するのに比べて設置が容易(GarabatoBOT同様)。
 
 ## 用途
@@ -30,7 +31,7 @@
   予定はExchangeに登録しているのに、ホワイトボードにも手で書くのは面倒なので。
   Aさんの予定「3/16休み」、Bさんの予定「3/17出張」等。
   ([Exchangeサーバからの予定取得](https://github.com/deton/ExchangeAppointmentBot))
-  ![行動予定表ホワイトボード写真](https://github.com/deton/hakubanbot/raw/img/kodoyotei.jpg)
+  ![行動予定表ホワイトボード写真(Type1)](https://github.com/deton/hakubanbot/raw/img/kodoyotei.jpg)
 * 出退勤表示の自動更新。
   PCが起動中かどうかをもとに「3/13 8:20出勤」「3/13 18:00退勤」等を書く。
   ([LED点滅](https://github.com/deton/presenceled)だけだと、
@@ -43,10 +44,17 @@
   ([うおーるぼっとBLE](http://wallbot.org/)等)
 
 ## ハードウェア
-GarabatoBOTを参考に作成。
+Type1は、GarabatoBOTを参考に作成。
 3Dプリンタによる部品でなく、入手しやすい部品を使用。
 
-* モバイルバッテリをぶらさげているのは、
+* Type1: ゴンドラ側にモータ等を全て載せるタイプ。
+    + 利点: 設置が容易
+    + 欠点: 安定動作のためのセッティングが難しい
+* Type2: ゴンドラ側にはペンとペン上げ下げ用サーボモータのみ載せるタイプ。
+    + 利点: Type1に比べて、安定動作するセッティングが容易
+    + 欠点: 設置が少し面倒
+
+* (Type1)モバイルバッテリをぶらさげているのは、
   糸巻き部分がホワイトボードに平行になるようにするため。
   斜めになっていると、回転時に紐がひっかかって外れるので。
 
@@ -54,7 +62,7 @@ GarabatoBOTを参考に作成。
 * イレーザは、ゼムクリップを切断したもので、消しゴムをサーボアームに固定。
   消しゴムにティッシュペーパやフェルト等を貼り付け。
 
-![hakubanbot裏側写真](https://github.com/deton/hakubanbot/raw/img/hakubanbot-back.jpg)
+![hakubanbot裏側写真(Type1)](https://github.com/deton/hakubanbot/raw/img/hakubanbot-back.jpg)
 
 ## ソフトウェア
 Linino ONE(Linux+Arduino)で、HTTP受け付け(Linux)と、モータ制御(Arduino)。
@@ -110,26 +118,28 @@ hakubanbot/*は/usr/lib/python2.7/site-packages/hakubanbot/に配置。
   ペン上げとイレーザを使い分けやすいので今回の用途には便利。
 * タミヤのユニバーサルプレート
 * 目玉クリップ。ホワイトボードペン固定用
-* ねじ8個。ステッピングモータや目玉クリップをユニバーサルプレートに固定。
+* ねじ8個。ステッピングモータ(Type1)や目玉クリップをユニバーサルプレートに固定。
   タミヤのユニバーサルアームセットのものを使用。
+* (Type2)タミヤのユニバーサルアームセットのスペーサーQ4 4個、目玉クリップ4個。
+  ステッピングモータをホワイトボード側に固定。
 * はさみで切れるユニバーサル基板
 * ピンソケット。ステッピングモータ接続用に最低24口
 * モータ電源用USBケーブル。切断して5V電源をモータ用に接続
 * Linino ONE用microUSBケーブル
-* モバイルバッテリもしくは単3形ニッケル水素充電池4本。
+* (Type1)モバイルバッテリもしくは単3形ニッケル水素充電池4本。
   USB出力2つ、Qi充電対応で、在庫処分になっていたQE-PL202を購入。
 
 ## 課題
-安定して自動的な書き消しができるようにするのはなかなか大変そう。
-Makelangelo等のように、
-ホワイトボード側にステッピングモータを配置する方が安定するのかも。
+Type1の場合、安定して自動的な書き消しができるようにするのはなかなか大変そう。
+Type2にして、ホワイトボード側にステッピングモータを配置すると、
+だいぶ安定して動作する印象。
 
-* ペンの上げ下げを確実にする。
+* (Type1)ペンの上げ下げを確実にする。
  * モバイルバッテリが先にホワイトボードに接触して、ペンが接触しない場合あり。
  * ホワイトボード上部と下部で調整し直さないと駄目な場合あり。
  * ホワイトボード端の方だとペンの上げ下げがうまくいかない場合あり。
 * セッティングによっては、ゴンドラ移動時に糸巻きから糸が外れることが頻発する。
- * モバイルバッテリが先にホワイトボードに接触して、
+ * (Type1)モバイルバッテリが先にホワイトボードに接触して、
    糸巻きが斜めになっている場合。
 * イレーズに時間がかかる。
 
@@ -141,14 +151,15 @@ Makelangelo等のように、
 
 ## TODO
 * 文字列描画中に、次に書く文字列の指示を受け付けてキューイングする機能。
-* モバイルバッテリをQi充電できるように、描画終了時に特定位置に移動。
 * ペン先が乾かないようキャップをはめる。描画終了時に特定位置に移動して。
 * モータ電源用USBケーブルが抜けやすいので、ピンヘッダでなくDCジャック等にする。
+* ~~モバイルバッテリをQi充電できるように、描画終了時に特定位置に移動。~~
+  QE-PL202は、給電中の充電に対応していない。
 
 ## 参考
 * [Makelangelo](https://github.com/MarginallyClever/Makelangelo)。
   なお、kst2gcode.pyで生成したG-Codeは、Makelangeloでも描画可能なはず。
 * [GarabatoBOT](https://github.com/astromaf/GarabatoBOT)
 * [polargraph](https://github.com/euphy/polargraphcontroller)
+* [mDrawBotのmSpider](https://github.com/Makeblock-official/mDrawBot)
 * [gocupi](https://github.com/brandonagr/gocupi)
-
