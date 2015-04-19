@@ -16,28 +16,31 @@ def draw_gcodes(g):
     os.close(sys.stdout.fileno())
     conn = hakubanbot.gcode2mcu.McuConnection()
     conn.draw_gcodes(g + ["M18"])
-    #conn.draw_gcodes(["M17"] + g + ["M18"])
 
-ERASER_OFFSET = (10, -17) # offset of eraser from pen
+ERASER_OFFSET = (-5, -17) # offset of eraser from pen
+BASE_XYPOS = (0, 200) # [mm]
 
-def drawtext(text, xyscale, xypos=None, erase=None):
+def drawtext(text, xyscale, xypos=None, erase=None, backbase=None):
     kstfont = hakubanbot.kst2gcode.KST2GCode()
-    gcode = kstfont.str2gcode(text, xyscale, xypos)
+    textgcode = kstfont.str2gcode(text, xyscale, xypos)
     # TODO: trim long line
     if erase:
         wh = kstfont.get_width_height(text, xyscale)
         # add eraser offset
         if xypos is None:
             eg = hakubanbot.eraseg.make_erase_gcode(None, wh)
-            draw_gcodes(["G91", "G0 X%d Y%d" % ERASER_OFFSET] + eg
+            gcode = (["G91", "G0 X%d Y%d" % ERASER_OFFSET] + eg
                 + ["G91", "G0 X-%d Y%d" % (wh[0]+ERASER_OFFSET[0],-ERASER_OFFSET[1])]
-                + gcode)
+                + textgcode)
         else:
             eg = hakubanbot.eraseg.make_erase_gcode(
                 (xypos[0]+ERASER_OFFSET[0],xypos[1]+ERASER_OFFSET[1]), wh)
-            draw_gcodes(eg + gcode)
+            gcode = eg + textgcode
     else:
-        draw_gcodes(gcode + ["G91", "G0 Y-5"])
+        gcode = textgcode
+    if backbase: # back to base position after drawing
+        gcode = gcode + ["G90", "G0 X%d Y%d" % BASE_XYPOS]
+    draw_gcodes(gcode)
 
 # [mm] to [dy] for G-Code: "G0 Y-%d" % dy
 MM2DY = 100/87.0 # Y100:87mm = y:1
@@ -50,8 +53,8 @@ def cm2dy(y):
 # whiteboard size [mm]
 XMIN = -300
 XMAX = 300
-YMIN = -300
-YMAX = 300
+YMIN = -500
+YMAX = 500
 # check range of x and y
 def outofrange(xypos):
     if xypos is None:
@@ -70,6 +73,7 @@ if cmd == "drawtext":
     x = form.getfirst("x")
     y = form.getfirst("y")
     erase = form.getfirst("erase")
+    backbase = form.getfirst("backbase")
     scalex = scaley = 1.0
     if size:
         scalex = cm2dx(size) / 30.0
@@ -81,7 +85,7 @@ if cmd == "drawtext":
         print "x or y is out of range"
         exit()
     print "start drawing"
-    drawtext(text, (scalex,scaley), xypos, erase)
+    drawtext(text, (scalex,scaley), xypos, erase, backbase)
 elif cmd == "init":
     print "init"
     initg = ["M101 T%.1f B%.1f L%.1f R%.1f I1 J-1" % (YMAX/10,YMIN/10,XMIN/10,XMAX/10),
