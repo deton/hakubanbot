@@ -1,21 +1,34 @@
 #!/usr/bin/python
 import cgi
 import os, sys, subprocess
+import datetime, pickle
 import hakubanbot.kst2gcode, hakubanbot.gcode2mcu, hakubanbot.eraseg
 #import cgitb
 #cgitb.enable()
+
+LOCKDIR = '/tmp/hakubandrawer.lock'
+SPOOLDIR = '/var/spool/hakubanbot/'
+DRAWERCMD = 'hakubandrawer.py'
+DRAWERPATH = os.path.join('/usr/lib/python2.7/hakubanbot/', DRAWERCMD)
 
 print "HTTP/1.0 200 OK"
 print "Content-Type: text/plain"
 print
 
+def queue_gcodes(g):
+    fname = '{:%Y%m%d%H%M%S}_{}.pkl'.format(datetime.datetime.now(), os.getpid())
+    path = os.path.join(SPOOLDIR, fname)
+    with open(path, 'wb') as f:
+        pickle.dump(g, f, pickle.HIGHEST_PROTOCOL)
+
 def draw_gcodes(g):
     # close stdout to avoid being killed while drawing.
-    # TODO: queue and batch execution
     sys.stdout.flush()
     os.close(sys.stdout.fileno())
-    conn = hakubanbot.gcode2mcu.McuConnection()
-    conn.draw_gcodes(g + ["M18"])
+    # conn.draw_gcodes(g + ["M18"])
+    # queue and batch execution
+    queue_gcodes(g)
+    os.execl(DRAWERPATH, DRAWERPATH)
 
 ERASER_OFFSET = (-5, -17) # offset of eraser from pen
 BASE_XYPOS = (0, 200) # [mm]
@@ -95,7 +108,18 @@ elif cmd == "halt":
     print "halt"
     sys.stdout.flush()
     os.close(sys.stdout.fileno())
-    subprocess.call(["killall", "nph-hakubanbot.py"])
+    subprocess.call(["killall", DRAWERCMD])
+    os.rmdir(LOCKDIR)
+elif cmd == "restart":
+    print "restart"
+    sys.stdout.flush()
+    os.close(sys.stdout.fileno())
+    os.execl(DRAWERPATH, DRAWERPATH)
+elif cmd == "clearqueue":
+    print "clear queue"
+    for f in os.listdir(SPOOLDIR):
+        print f
+        os.remove(os.path.join(SPOOLDIR, f))
 elif cmd == "move":
     x = form.getfirst("x", "0")
     y = form.getfirst("y", "0")

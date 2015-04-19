@@ -21,7 +21,7 @@
 <h3>中断</h3>
 <form method="POST" action="/cgi-bin/nph-hakubanbot.py">
 <input type="hidden" name="cmd" value="halt">
-<input type="submit" value="中断: 文字描写・消去を中断">
+<input type="submit" value="中断: 文字描画・消去を中断">
 </form>
 <p>
 (一連のG-Codeのうち、次以降のG-Codeの実行を取りやめ。
@@ -66,6 +66,23 @@
   <li><input type="submit">
 </ul>
 </form>
+
+<hr>
+<h3>やり直し</h3>
+<form method="POST" action="/cgi-bin/nph-hakubanbot.py">
+<input type="hidden" name="cmd" value="restart">
+<input type="submit" value="やり直し: 中断した描画をやり直し">
+</form>
+<p>
+
+<hr>
+<h3>実行キュー全消去</h3>
+<form method="POST" action="/cgi-bin/nph-hakubanbot.py">
+<input type="hidden" name="cmd" value="clearqueue">
+<input type="submit" value="実行キュー全消去">
+</form>
+<p>
+中断した描画や実行待ちの描画を全消去。
 
 <hr>
 <h3>初期化</h3>
