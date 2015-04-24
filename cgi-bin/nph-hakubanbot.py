@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import cgi
-import os, sys, subprocess
+import os, sys, subprocess, errno
 import datetime, pickle
 import hakubanbot.kst2gcode, hakubanbot.gcode2mcu, hakubanbot.eraseg
 #import cgitb
@@ -16,6 +16,11 @@ print "Content-Type: text/plain"
 print
 
 def queue_gcodes(g):
+    try:
+        os.mkdir(SPOOLDIR)
+    except OSError as err:
+        if err.errno != errno.EEXIST:
+            raise
     fname = '{:%Y%m%d%H%M%S}_{}.pkl'.format(datetime.datetime.now(), os.getpid())
     path = os.path.join(SPOOLDIR, fname)
     with open(path, 'wb') as f:
