@@ -31,7 +31,6 @@
   予定はExchangeに登録しているのに、ホワイトボードにも手で書くのは面倒なので。
   Aさんの予定「3/16休み」、Bさんの予定「3/17出張」等。
   ([Exchangeサーバからの予定取得](https://github.com/deton/ExchangeAppointmentBot))
-  ![行動予定表ホワイトボード写真(Type1)](https://github.com/deton/hakubanbot/raw/img/kodoyotei.jpg)
 * 出退勤表示の自動更新。
   PCが起動中かどうかをもとに「3/13 8:20出勤」「3/13 18:00退勤」等を書く。
   ([LED点滅](https://github.com/deton/presenceled)だけだと、
@@ -63,6 +62,12 @@ Type1は、GarabatoBOTを参考に作成。
   消しゴムにティッシュペーパやフェルト等を貼り付け。
 
 ![hakubanbot裏側写真(Type1)](https://github.com/deton/hakubanbot/raw/img/hakubanbot-back.jpg)
+
+* (Type2.1)糸巻きから紐が外れないように、糸巻き部分にカバーを取り付けた版。
+  単3電池は重し。ゴンドラが軽すぎると、イレーズができないのと、
+  ペン上げ下げ時に揺れが大きくて書く線が揺れるので。
+
+![カバー付き糸巻き](https://github.com/deton/hakubanbot/raw/img/hakubanbot2-spoolcover.jpg)
 
 ## ソフトウェア
 Linino ONE(Linux+Arduino)で、HTTP受け付け(Linux)と、モータ制御(Arduino)。
@@ -97,6 +102,11 @@ hakubanbot/*は/usr/lib/python2.7/site-packages/hakubanbot/に配置。
 
 * hakubanbot.html: 書く文字列を入力するFORM等。
 * cgi-bin/nph-hakubanbot.py: CGIスクリプト。
+  ホワイトボードの特定位置に文字を書きたい場合は、
+  ホワイトボードの大きさに合わせて、XMIN等の値を変更する必要あり。
+  不正確な値だと、ペン座標指定と実際の位置のずれが発生する。
+  例えば、(0,0)→(0,25)→(0,0)と移動した際、元の位置に戻らず1cm程度ずれる等。
+  細かい位置にこだわらなければ、適当な値でもだいたいは問題なし(例:上述の動画)。
 * hakubanbot/kst2gcode.py: 指定された文字列をG-Code化。
 * hakubanbot/gcode2mcu.py: G-CodeをArduino(MCU)側に送信。
 * hakubanbot/eraseg.py: イレーズ動作を行うG-Codeを生成。
@@ -110,10 +120,11 @@ hakubanbot/*は/usr/lib/python2.7/site-packages/hakubanbot/に配置。
 ## 部品
 * [Linino ONE](http://akizukidenshi.com/catalog/g/gM-08902/)。
   Arduino+Linux。Arduino Yunの小型版。
-  Wi-Fi接続できてArudinoスケッチが使えて小型。
+  Wi-Fi接続できてArduinoスケッチが使えて小型。
 * [ステッピングモータ(モータドライバ付き)](http://www.sengoku.co.jp/mod/sgk_cart/detail.php?code=EEHD-4JT3) 2個
 * スプールというか糸巻き2個。ダイソーのクリアカラー リールホルダーを分解して
   取り出したもの。紐もそのまま使用。
+  ケースも穴を開けて軸を取り除いて流用(Type2.1)。
 * サーボモータ。手元にあったプチロボS2のものを流用。サーボホーンの形がT字形で、
   ペン上げとイレーザを使い分けやすいので今回の用途には便利。
 * タミヤのユニバーサルプレート
@@ -134,13 +145,13 @@ Type1の場合、安定して自動的な書き消しができるようにする
 Type2にして、ホワイトボード側にステッピングモータを配置すると、
 だいぶ安定して動作する印象。
 
-* (Type1)ペンの上げ下げを確実にする。
- * モバイルバッテリが先にホワイトボードに接触して、ペンが接触しない場合あり。
- * ホワイトボード上部と下部で調整し直さないと駄目な場合あり。
- * ホワイトボード端の方だとペンの上げ下げがうまくいかない場合あり。
-* セッティングによっては、ゴンドラ移動時に糸巻きから糸が外れることが頻発する。
- * (Type1)モバイルバッテリが先にホワイトボードに接触して、
-   糸巻きが斜めになっている場合。
+* イレーズがきれいにできない。
+  ホワイトボードによっては、手で消す場合も少し力を入れないといけないものがあり、
+  hakubanbotでの自動イレーズがきれいにできない。少しかすれた形になる程度。
+  ゴンドラ部分が軽すぎると、
+  ホワイトボード上をすべるだけでイレーズができないので、
+  重しとして単3電池4本を載せたが(Type2.1)、まだ軽すぎる模様。
+
 * イレーズに時間がかかる。
 
 * G-Codeの最適化。
@@ -149,16 +160,25 @@ Type2にして、ホワイトボード側にステッピングモータを配置
 * 移動速度の高速化。モータ制御パラメータのチューニングや、
   polargraph同様にAccelStepperライブラリの使用等。
 
+* (Type1)ペンの上げ下げを確実にする。
+ * モバイルバッテリが先にホワイトボードに接触して、ペンが接触しない場合あり。
+ * ホワイトボード上部と下部で調整し直さないと駄目な場合あり。
+ * ホワイトボード端の方だとペンの上げ下げがうまくいかない場合あり。
+* セッティングによっては、ゴンドラ移動時に糸巻きから糸が外れることが頻発する。
+ * (Type1)モバイルバッテリが先にホワイトボードに接触して、
+   糸巻きが斜めになっている場合。
+
 ## TODO
-* 文字列描画中に、次に書く文字列の指示を受け付けてキューイングする機能。
 * ペン先が乾かないようキャップをはめる。描画終了時に特定位置に移動して。
-* モータ電源用USBケーブルが抜けやすいので、ピンヘッダでなくDCジャック等にする。
+  少し試してみた感じでは、
+  特定位置に移動するとティッシュペーパーを当てる形にする程度で良さそう。
 * ~~モバイルバッテリをQi充電できるように、描画終了時に特定位置に移動。~~
   QE-PL202は、給電中の充電に対応していない。
 
 ## 参考
 * [Makelangelo](https://github.com/MarginallyClever/Makelangelo)。
   なお、kst2gcode.pyで生成したG-Codeは、Makelangeloでも描画可能なはず。
+  (ペンの上げ下げは変換が必要かも)
 * [GarabatoBOT](https://github.com/astromaf/GarabatoBOT)
 * [polargraph](https://github.com/euphy/polargraphcontroller)
 * [mDrawBotのmSpider](https://github.com/Makeblock-official/mDrawBot)

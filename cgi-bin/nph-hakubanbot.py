@@ -36,7 +36,7 @@ def draw_gcodes(g):
     os.execl(DRAWERPATH, DRAWERPATH)
 
 ERASER_OFFSET = (-5, -17) # offset of eraser from pen
-BASE_XYPOS = (0, 200) # [mm]
+BASE_XYPOS = (195, 0) # [mm]
 
 def drawtext(text, xyscale, xypos=None, erase=None, backbase=None):
     kstfont = hakubanbot.kst2gcode.KST2GCode()
@@ -69,10 +69,10 @@ def cm2dy(y):
     return float(y) * 10 * MM2DY
 
 # whiteboard size [mm]
-XMIN = -300
-XMAX = 300
-YMIN = -500
-YMAX = 500
+XMIN = -250
+XMAX = 250
+YMIN = -440
+YMAX = 440
 # check range of x and y
 def outofrange(xypos):
     if xypos is None:
